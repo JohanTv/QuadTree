@@ -11,16 +11,16 @@ private:
     int height;
     int width;
     int maxGrayScale;
+    vector<vector<int>> matrix;
 
-    vector<vector<int>> getMatrix(fstream& file, int height, int width){
-        vector<vector<int>> matrix(height, vector<int>(width));
+    void generateMatrix(fstream& file, int height, int width){
+        matrix =  vector<vector<int>>(height, vector<int>(width));
         for(int i = 0; i < height; ++i)
             for(int j = 0; j < width; ++j)
                 file >> matrix[i][j];
-        return matrix;
     }
 
-    void printMatrix(vector<vector<int>>& matrix){
+    void printMatrix(){
         for(auto& row : matrix){
             for(auto& value : row){
                 cout << setw(3) << value;
@@ -28,14 +28,12 @@ private:
             cout << endl;
         }
     }
-
-    void insert();
-
 public:
     QuadTree(){}
     QuadTree(string filename){
         readPGMFile(filename);
     }
+    
     void readPGMFile(string filename){
         fstream file(filename, ios::in);
         if(file.is_open()){
@@ -43,14 +41,44 @@ public:
             getline(file, comment);
             getline(file, comment);
             file >> width >> height >> maxGrayScale;
-            auto matrix = getMatrix(file, height, width);
-            printMatrix(matrix);
+            generateMatrix(file, height, width);
+            printMatrix();
             file.close();
-            buildTree(matrix);
-        }else cout << "No existe" << endl;
+            buildTree();
+        }else cout << "Error al abrir el archivo" << endl;
     }
 
-    void buildTree(vector<vector<int>>& matrix){
-        
+    void buildTree(){
+        buildTreeUtil({0,0}, {height-1, width-1});
+    }
+
+    void buildTreeUtil(pair<int, int> start, pair<int, int> end){
+        if(start.first == end.first){
+            if(start.second == end.second){
+                insert(this->root, matrix[start.first][start.second]);
+            }
+            else{
+                int step = (end.second - start.second)/2;
+                buildTreeUtil(start, {start.first, start.second+step});
+                buildTreeUtil({start.first, start.second+step+1}, end);
+            }
+            return;
+        }
+        if(start.second == end.second){
+            int step = (end.first - start.first)/2;
+            buildTreeUtil(start, {start.first+step, start.second});
+            buildTreeUtil({start.first+step+1, start.second}, end);
+            return;
+        }
+        int stepHeight = (end.first - start.first)/2;
+        int stepWidth = (end.second - start.second)/2;
+        buildTreeUtil(start, {start.first+stepHeight, start.second+stepWidth});
+        buildTreeUtil({start.first, start.second+stepWidth+1}, {start.first+stepHeight, end.second});
+        buildTreeUtil({start.first+stepHeight+1, start.second}, {end.first, start.second+stepWidth});
+        buildTreeUtil({start.first+stepHeight+1, start.second+stepWidth+1}, end);
+    }
+
+    void insert(Node* root, int grayScale){
+        // falta implementar
     }
 };
