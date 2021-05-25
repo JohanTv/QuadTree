@@ -33,7 +33,7 @@ public:
     QuadTree(string filename){
         readPGMFile(filename);
     }
-    
+
     void readPGMFile(string filename){
         fstream file(filename, ios::in);
         if(file.is_open()){
@@ -49,10 +49,10 @@ public:
     }
 
     void buildTree(){
-        buildTreeUtil({0,0}, {height-1, width-1});
+        this->root = buildTreeUtil({0,0}, {height-1, width-1});
     }
 
-    void buildTreeUtil(pair<int, int> start, pair<int, int> end){
+    Node* buildTreeUtil(pair<int, int> start, pair<int, int> end){
         if(start.first == end.first){
             if(start.second == end.second){
                 insert(this->root, matrix[start.first][start.second]);
@@ -76,6 +76,7 @@ public:
         buildTreeUtil({start.first, start.second+stepWidth+1}, {start.first+stepHeight, end.second});
         buildTreeUtil({start.first+stepHeight+1, start.second}, {end.first, start.second+stepWidth});
         buildTreeUtil({start.first+stepHeight+1, start.second+stepWidth+1}, end);
+        // Node* node;
     }
 
     void insert(Node* root, int grayScale){
