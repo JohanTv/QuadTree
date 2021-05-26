@@ -55,12 +55,13 @@ public:
     Node* buildTreeUtil(pair<int, int> start, pair<int, int> end){
         if(start.first == end.first){
             if(start.second == end.second){
-                insert(this->root, matrix[start.first][start.second]);
+                return new Node(start, end, matrix[start.first][start.second]);
             }
             else{
                 int step = (end.second - start.second)/2;
                 buildTreeUtil(start, {start.first, start.second+step});
                 buildTreeUtil({start.first, start.second+step+1}, end);
+
             }
             return;
         }
@@ -72,14 +73,11 @@ public:
         }
         int stepHeight = (end.first - start.first)/2;
         int stepWidth = (end.second - start.second)/2;
-        buildTreeUtil(start, {start.first+stepHeight, start.second+stepWidth});
-        buildTreeUtil({start.first, start.second+stepWidth+1}, {start.first+stepHeight, end.second});
-        buildTreeUtil({start.first+stepHeight+1, start.second}, {end.first, start.second+stepWidth});
-        buildTreeUtil({start.first+stepHeight+1, start.second+stepWidth+1}, end);
-        // Node* node;
-    }
-
-    void insert(Node* root, int grayScale){
-        // falta implementar
+        Node* node = new Node;
+        node->children[0] = buildTreeUtil(start, {start.first+stepHeight, start.second+stepWidth});
+        node->children[1] = buildTreeUtil({start.first, start.second+stepWidth+1}, {start.first+stepHeight, end.second});
+        node->children[2] = buildTreeUtil({start.first+stepHeight+1, start.second}, {end.first, start.second+stepWidth});
+        node->children[3] = buildTreeUtil({start.first+stepHeight+1, start.second+stepWidth+1}, end);
+        node->compress();
     }
 };
