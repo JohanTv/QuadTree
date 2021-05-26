@@ -1,5 +1,7 @@
 #include "QuadTree.h"
 
 int main(){
-    QuadTree test("test.txt");
+    QuadTree test("dragon.pgm");
+    test.writeFileCompressed("output.dat");
+    test.readQuadTree("output.dat");
 }
