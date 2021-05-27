@@ -89,6 +89,7 @@ public:
     }
 
     void readPGMFile(string filename){
+      cout << filename << endl;
         fstream file(filename, ios::in);
         if(file.is_open()){
             string comment;
@@ -142,9 +143,9 @@ public:
     }
   
     void readQuadTree(string filename){
-        fstream file(filename, ios::in | ios::binary);
+        fstream file(filename+".dat", ios::in | ios::binary);
         if(file.is_open()){
-            fstream pgmFile("nuevaImagen.pgm", ios::out);
+            fstream pgmFile(filename+".pgm", ios::out);
             int width, height, maxGrayScale_;
             file.read((char*)& width, sizeof(width));
             file.read((char*)& height, sizeof(height));
