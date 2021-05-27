@@ -89,7 +89,6 @@ public:
     }
 
     void readPGMFile(string filename){
-      cout << filename << endl;
         fstream file(filename, ios::in);
         if(file.is_open()){
             string comment;
@@ -97,7 +96,6 @@ public:
             getline(file, comment);
             file >> width >> height >> maxGrayScale;
             generateMatrix(file, height, width);
-            printMatrix();
             file.close();
             buildTree();
         }else cout << "Error al abrir el archivo" << endl;
@@ -107,15 +105,18 @@ public:
         this->root = buildTreeUtil({0,0}, {height-1, width-1});
     }
 
-    void generatePDF() {
-	    fstream file("graph.vz", fstream::out | fstream::trunc);
+    void generatePDF(string folder) {
+        string graphFile = folder + "graph.vz";
+	    fstream file(graphFile, fstream::out | fstream::trunc);
 		if (file.is_open()) {
 			file << "digraph G\n" << "{\n";
 			root->printAllNodes(file);
 			root->printNodesConexiones(file);
 			file << "}\n";
 			file.close();
-			system("dot -Tpdf graph.vz -o graph.pdf");
+            string command = "dot -Tpdf " + folder + "graph.vz" + " -o " + folder + "graph.pdf";
+            cout << command << endl;
+			system(command.c_str());
 		}
 	}
 
